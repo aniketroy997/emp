@@ -19,6 +19,8 @@ router.get("/", (req, res) => {
   res.send("hkp");
 });
 
+
+// Get All Data 
 router.get("/getAllData", async (req, res) => {
 
   try {
