@@ -19,6 +19,21 @@ router.get("/", (req, res) => {
   res.send("hkp");
 });
 
+router.get("/getAllData", async (req, res) => {
+
+  try {
+    
+ 
+  const SuperAdmins = await SuperAdmin.find()
+  const Admins = await admin.find()
+  const employee = await employees.find({})
+
+  res.status(200).json({"message": SuperAdmins, Admins, employees})
+} catch (error) {
+    res.status(401).json({"message" : error})
+}
+})
+
 router.post("/", async (req, res) => {
 
   try {
@@ -107,7 +122,7 @@ router.post("/superadmin/createAdmin", SuperAdminAuthentication, async (req, res
        return res.status(421).json({ message1: "Please complete all details" });
      }
 
-     const adminExist = await admin.findOne({ email });
+     const adminExist = await admin.findOne({ email });e
 
      if (adminExist) {
        return res.status(422).json({ message2: "Admin Already Exist" });
@@ -210,64 +225,64 @@ router.post("/admin/createemployee", AdminAuthentication, async (req, res) => {
       return res.status(401).json({message : "employee already exist"})
     }
 
-//     jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: '1h' }, function(err, token){
+    jwt.sign({ email }, process.env.SECRET_KEY, { expiresIn: '1h' }, function(err, token){
           
-//       if(err){
-//         return res.status(401).json({message: err})
-//       }
+      if(err){
+        return res.status(401).json({message: err})
+      }
 
-//       if(token){
-//         // res.cookie("token_admin", token, {httpOnly : true, secure : false, sameSite : "none",  expiresIn : 300000})
+      if(token){
+        // res.cookie("token_admin", token, {httpOnly : true, secure : false, sameSite : "none",  expiresIn : 300000})
         
-//         bcrypt.hash(token, 10, async (err, success) => {
-//           if (err) {
-//             return res.status(500).json({ message: err });
-//           }
+        bcrypt.hash(token, 10, async (err, success) => {
+          if (err) {
+            return res.status(500).json({ message: err });
+          }
 
-//           if(success){
-//             console.log("succ", success);
-//             return res.status(200).json({message : success})
-//             const link = `http://localhost:5000/api/addemp?token=${success}&email=${email}`
-//           }
+          if(success){
+            console.log("succ", success);
+            return res.status(200).json({message : success})
+            const link = `http://localhost:5000/api/addemp?token=${success}&email=${email}`
+          }
 
-//         })
+        })
 
 
 
-//         // const transporter = nodemailer.createTransport({
-//         //   host : "smtp.gmail.com",
-//         //   port : 587,
-//         //   secure : false,
-//         //   requireTLS : true,
-//         //   auth : {
-//         //     user : "hit98987@gmail.com",
-//         //     pass : "gscneqsqdnlxiegl"
-//         //   }
-//         // });
+        const transporter = nodemailer.createTransport({
+          host : "smtp.gmail.com",
+          port : 587,
+          secure : false,
+          requireTLS : true,
+          auth : {
+            user : "hit98987@gmail.com",
+            pass : "gscneqsqdnlxiegl"
+          }
+        });
 
-//     // const mailOptions = {
-//     //   from: "hit98987@gmail.com",
-//     //   to: "hitpatel18112000@gmail.com",
-//     //   subject: 'Password Reset',
-//     //   html: `<p>Please click the following link to reset your password:</p><p>${token}</p>`
-//     // };
+    const mailOptions = {
+      from: "hit98987@gmail.com",
+      to: "hitpatel18112000@gmail.com",
+      subject: 'Password Reset',
+      html: `<p>Please click the following link to reset your password:</p><p>${token}</p>`
+    };
 
-//     // transporter.sendMail(mailOptions, (error, info) => {
-//     //   if (error) {
-//     //     console.log(error);
-//     //     return res.status(500).json({ message: 'Error sending email' });
-//     //   }else{
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Error sending email' });
+      }else{
 
      
 
-//     //   console.log('Password reset email sent');
-//     //   console.log(info.response);
-//     //   res.json({ message: 'Password reset email sent' });
-//     // }
-//     // });
+       console.log('Password reset email sent');
+       console.log(info.response);
+       res.json({ message: 'Password reset email sent' });
+     }
+     });
     
-//   }
-// })
+  }
+ })
     
 let Token = crypto.randomBytes(32).toString("hex");
 const hash = await bcrypt.hash(Token, Number(10));
