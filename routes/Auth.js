@@ -73,10 +73,10 @@ router.post("/", async (req, res) => {
 });
 
 
-
+// login to the the super admin 
 router.post("/superadmin/login", async (req, res) => {
   try {
-  
+    
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -85,32 +85,34 @@ router.post("/superadmin/login", async (req, res) => {
 
     const SuperAdminExist = await SuperAdmin.findOne({ email });
 
+    // if the super admin does not exist 
     if (!SuperAdminExist) {
       return res.status(401).json({ message: 'user dont exist' });
     }
     
-      const isMatch = await bcrypt.compare(password, SuperAdminExist.password);
+    const isMatch = await bcrypt.compare(password, SuperAdminExist.password);
 
 
-      if (!isMatch) {
-        return res.status(401).json({ message: 'Invalid credentials' });
-      }
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
 
-        jwt.sign({ _id: SuperAdminExist._id }, process.env.SECRET_KEY, { expiresIn: '5m' }, function(err, token){
-          
-          if(err){
-           return res.status(401).json({message: err})
-          }
+      jwt.sign({ _id: SuperAdminExist._id }, process.env.SECRET_KEY, { expiresIn: '5m' }, function(err, token){
+        
+        if(err){
+          return res.status(401).json({message: err})
+        }
 
-          if(token){
-            res.cookie("token_superAdmin", token, {httpOnly : true, secure : false, sameSite : "none",  expiresIn : 300000})
-           return res.status(200).json({message : "successfully loggedIn"})
-          }
-        })
+        if(token){
+          res.cookie("token_superAdmin", token, {httpOnly : true, secure : false, sameSite : "none",  expiresIn : 300000})
+          return res.status(200).json({message : "successfully loggedIn"})
+        }
+      })
 
   } catch (error) {
     res.status(500 ).json({message : error.message})
   }
+
 });
 
 
